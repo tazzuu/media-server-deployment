@@ -1,0 +1,12 @@
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+    - PLACEHOLDER
+
+# NOTE: server appears to get deployed with ssh installed and enabled by default
+# prep it for Ansible runner
+packages:
+  - python3
+  - htop
+  - btop

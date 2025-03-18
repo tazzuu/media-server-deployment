@@ -1,0 +1,238 @@
+# Ansible playbook to install software into the media server
+---
+- name: Server Deployment Playbook
+  hosts: "{{ myhosts | default('all') }}" # read from cli or all hosts
+  tasks:
+
+  - name: Update apt
+    become: true
+    apt:
+      upgrade: true
+      update_cache: true
+
+  - name: Install packages
+    become: true
+    apt:
+      autoclean: true
+      autoremove: true
+      pkg:
+      - apt-transport-https
+      - bc
+      - btop
+      - build-essential
+      - bzip2
+      - ca-certificates
+      - checkinstall
+      - cifs-utils
+      - clinfo
+      - cryptsetup
+      - curl
+      - dmidecode
+      - ethtool
+      - fail2ban
+      # - firmware-linux-free
+      # - firmware-linux-nonfree
+      - flatpak
+      # - fuse
+      - gcc
+      - git
+      - glmark2
+      - htop
+      # - ifconfig
+      - intel-gpu-tools
+      # - intel-gsc
+      - intel-media-va-driver-non-free
+      - intel-opencl-icd
+      - iotop
+      - jq
+      - libblkid1
+      - libglib2.0-dev
+      - libseccomp-dev
+      - libvdpau-dev
+      - libze1
+      - libze-intel-gpu1
+      # - linux-headers-amd64
+      - lshw
+      - make
+      - mesa-vulkan-drivers
+      - micro
+      - nethogs
+      - net-tools
+      - nmon
+      # - nvidia-container-toolkit
+      # - nvidia-cuda-toolkit
+      # - nvidia-detect
+      # - nvidia-driver
+      - nvme-cli
+      - nvtop
+      - openssh-server
+      - parallel
+      - parted
+      - php
+      - php-curl
+      - php-dom
+      - php-gd
+      - php-simplexml
+      - php-sqlite3
+      - pkg-config
+      - powertop
+      - python3-markdown
+      - rsnapshot
+      - rsync
+      - runc
+      - samba
+      - screen
+      - smartmontools
+      - smbclient
+      - software-properties-common
+      - sqlite3
+      - squashfs-tools
+      - sudo
+      - sysstat
+      - tree
+      - ufw
+      - unzip
+      - xfsprogs
+
+  # DOCKER INSTALL
+  # https://docs.docker.com/engine/install/ubuntu/
+  - name: get Ubuntu codename
+    shell: . /etc/os-release && echo "$VERSION_CODENAME"
+    register: ubuntu_codename
+
+  - name: Add Docker Key
+    become: true
+    apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+  - name: Add Docker Repo
+    become: true
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu {{ ubuntu_codename.stdout }} stable
+      state: present
+
+  - name: Install Docker
+    become: true
+    apt:
+      update_cache: true
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+
+  - name: Add user to Docker group
+    become: true
+    user:
+      name: "{{ ansible_user }}"
+      groups: docker
+      append: yes
+
+  # MAKE USER BIN
+  # need a dir for some user installed software
+  - name: Make ~/bin
+    file:
+      path: ~/bin
+      state: directory
+      mode: '0775'
+
+  - name: Add ~/bin to PATH
+    blockinfile:
+      marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER PATH'
+      path: ~/.bashrc
+      block: |
+        export PATH="${HOME}/bin:${PATH}"
+
+  # INSTALL mergerfs
+  # https://trapexit.github.io/mergerfs/setup/installation/
+  - name: Install mergerfs
+    become: true
+    apt:
+      deb: https://github.com/trapexit/mergerfs/releases/download/2.40.2/mergerfs_2.40.2.ubuntu-noble_amd64.deb
+
+  # INSTALL SNAPRAID
+  # https://github.com/amadvance/snapraid ; https://www.snapraid.it/download
+  - name: Check if SnapRAID installed
+    stat:
+      path: ~/bin/snapraid
+    register: snapraid_exists
+
+  - name: Download SnapRAID
+    unarchive:
+      src: https://github.com/amadvance/snapraid/releases/download/v12.4/snapraid-12.4.tar.gz
+      dest: ~/bin # ~/bin/snapraid-12.4
+      remote_src: true
+    when: not snapraid_exists.stat.exists
+
+  - name: Install SnapRAID
+    shell: |
+      cd ~/bin/snapraid-12.4 && ./configure && make
+    when: not snapraid_exists.stat.exists
+
+  - name: Symlink SnapRAID
+    shell: |
+      cd ~/bin && ln -s snapraid-12.4/snapraid
+    when: not snapraid_exists.stat.exists
+
+  # NVIDIA DRIVERS
+  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
+
+  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#network-repo-installation-for-ubuntu
+  # https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_network
+  - name: Install CUDA toolkit deb
+    become: true
+    apt:
+      deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+
+  - name: Install CUDA toolkit
+    become: true
+    apt:
+      update_cache: true
+      pkg:
+      - cuda-toolkit-12-8
+
+  - name: Install CUDA drivers
+    become: true
+    apt:
+      update_cache: true
+      pkg:
+      - cuda-drivers
+
+  - name: Install GPUDirect Filesystem
+    become: true
+    apt:
+      update_cache: true
+      pkg:
+      - nvidia-gds
+
+  # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
+  - name: Check if Nvidia Container Toolkit is Set up
+    stat:
+      path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    register: nvctk_exists
+
+  - name: Setup Nvidia Container Toolkit
+    shell: |
+      curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+        sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+        sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+    when: not nvctk_exists.stat.exists
+
+  - name: Install Nvidia Container Toolkit
+    become: true
+    apt:
+      update_cache: true
+      pkg:
+      - nvidia-container-toolkit
+
+  - name: Configure Nvidia Container Toolkit
+    shell: |
+      sudo nvidia-ctk runtime configure --runtime=docker
+      sudo systemctl restart docker
+    # sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+
+
+
