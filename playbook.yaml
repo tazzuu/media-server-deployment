@@ -2,7 +2,16 @@
 ---
 - name: Server Deployment Playbook
   hosts: "{{ myhosts | default('all') }}" # read from cli or all hosts
+  vars:
+    config_file: "/etc/profile.d/media-server-env.sh"
+    install_dir: "/usr/local/bin"
   tasks:
+
+  - name: Create config file
+    become: true
+    file:
+      path: "{{ config_file }}"
+      state: touch
 
   - name: Update apt
     become: true
@@ -25,6 +34,7 @@
       - checkinstall
       - cifs-utils
       - clinfo
+      - cmake
       - cryptsetup
       - curl
       - dmidecode
@@ -130,21 +140,6 @@
       groups: docker
       append: yes
 
-  # MAKE USER BIN
-  # need a dir for some user installed software
-  - name: Make ~/bin
-    file:
-      path: ~/bin
-      state: directory
-      mode: '0775'
-
-  - name: Add ~/bin to PATH
-    blockinfile:
-      marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER PATH'
-      path: ~/.bashrc
-      block: |
-        export PATH="${HOME}/bin:${PATH}"
-
   # INSTALL mergerfs
   # https://trapexit.github.io/mergerfs/setup/installation/
   - name: Install mergerfs
@@ -156,25 +151,33 @@
   # https://github.com/amadvance/snapraid ; https://www.snapraid.it/download
   - name: Check if SnapRAID installed
     stat:
-      path: ~/bin/snapraid
+      path: "{{ install_dir }}/snapraid"
     register: snapraid_exists
 
   - name: Download SnapRAID
+    become: true
     unarchive:
       src: https://github.com/amadvance/snapraid/releases/download/v12.4/snapraid-12.4.tar.gz
-      dest: ~/bin # ~/bin/snapraid-12.4
+      dest: "{{ install_dir }}"
       remote_src: true
     when: not snapraid_exists.stat.exists
 
+
   - name: Install SnapRAID
     shell: |
-      cd ~/bin/snapraid-12.4 && ./configure && make
+      cd "{{ install_dir }}/snapraid-12.4" && ./configure && make
     when: not snapraid_exists.stat.exists
 
+  # - name: Symlink SnapRAID
+  #   shell: |
+  #     cd "{{ install_dir }}" && ln -s snapraid-12.4/snapraid
+  #   when: not snapraid_exists.stat.exists
   - name: Symlink SnapRAID
-    shell: |
-      cd ~/bin && ln -s snapraid-12.4/snapraid
-    when: not snapraid_exists.stat.exists
+    become: true
+    file:
+      src: "{{ install_dir }}/snapraid-12.4/snapraid"
+      dest: "{{ install_dir }}/snapraid"
+      state: link
 
   # NVIDIA DRIVERS
   # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
@@ -206,6 +209,41 @@
       update_cache: true
       pkg:
       - nvidia-gds
+
+  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#environment-setup
+  - name: Update PATH for CUDA
+    become: true
+    blockinfile:
+      marker: '# {mark} ANSIBLE MANAGED BLOCK FOR CUDA in PATH'
+      path: "{{ config_file }}"
+      block: |
+        export PATH="/usr/local/cuda-12.8/bin:$PATH"
+        export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
+
+  - name: Install CUDA samples
+    become: true
+    git:
+      repo: 'https://github.com/NVIDIA/cuda-samples.git'
+      dest: "{{ install_dir }}/cuda-samples"
+      version: v12.8
+      depth: 1
+
+  # https://github.com/abetlen/llama-cpp-python/issues/627
+  # https://github.com/NVlabs/instant-ngp/issues/1142
+  - name: Compile CUDA samples
+    become: true
+    shell: |
+      source "{{ config_file }}" && cd "{{ install_dir }}/cuda-samples" && mkdir -p build && cd build && cmake .. && make -j$(nproc)
+    args:
+      executable: /bin/bash
+    # export PATH="/usr/local/cuda/bin:$PATH"
+    # export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    # source ~/.profile && echo $PATH &&
+
+
+
+
+
 
   # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
   - name: Check if Nvidia Container Toolkit is Set up
