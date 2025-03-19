@@ -3,6 +3,7 @@
 - name: Server Deployment Playbook
   hosts: "{{ myhosts | default('all') }}" # read from cli or all hosts
   vars:
+    # NOTE: ~/.bashrc does not work in non-interactive mode on Ubuntu 24.04
     config_file: "/etc/profile.d/media-server-env.sh"
     install_dir: "/usr/local/bin"
   tasks:
@@ -44,6 +45,8 @@
       # - firmware-linux-nonfree
       - flatpak
       # - fuse
+      - freeglut3-dev
+      - g++
       - gcc
       - git
       - glmark2
@@ -56,9 +59,15 @@
       - iotop
       - jq
       - libblkid1
+      - libfreeimage-dev
+      - libglfw3-dev
       - libglib2.0-dev
+      - libglu1-mesa-dev
       - libseccomp-dev
       - libvdpau-dev
+      - libx11-dev
+      - libxmu-dev
+      - libxi-dev
       - libze1
       - libze-intel-gpu1
       # - linux-headers-amd64
@@ -236,14 +245,7 @@
       source "{{ config_file }}" && cd "{{ install_dir }}/cuda-samples" && mkdir -p build && cd build && cmake .. && make -j$(nproc)
     args:
       executable: /bin/bash
-    # export PATH="/usr/local/cuda/bin:$PATH"
-    # export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-    # source ~/.profile && echo $PATH &&
-
-
-
-
-
+    # NOTE: test with {{ install_dir }}/cuda-samples/build/Samples/1_Utilities/deviceQuery/deviceQuery
 
   # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
   - name: Check if Nvidia Container Toolkit is Set up
