@@ -9,7 +9,7 @@ UBUNTU_VERSION="24.04"
 multipass launch "${UBUNTU_VERSION}" \
   --name "${VM_NAME}" \
   --memory 8G \
-  --cpus 8 \
+  --cpus "$(( $(nproc) / 2 ))" \
   --disk 30G \
   --cloud-init "${THIS_DIR}/cloud-init.yaml"
 

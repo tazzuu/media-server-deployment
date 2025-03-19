@@ -1,3 +1,5 @@
+# init file for Multipass dev server vm
+
 users:
   - name: ubuntu
     sudo: ALL=(ALL) NOPASSWD:ALL
