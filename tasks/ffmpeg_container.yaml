@@ -1,0 +1,9 @@
+---
+- name: Clone ffmpeg Docker container
+  git:
+    repo: "https://github.com/tazzuu/ffmpeg-av1"
+    dest: "/home/{{ ansible_user }}/ffmpeg-av1"
+
+- name: Build ffmpeg container
+  shell: |
+    cd "/home/{{ ansible_user }}/ffmpeg-av1" && docker build -t ffmpeg-av1:7.1.1 .

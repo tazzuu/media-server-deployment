@@ -1,3 +1,5 @@
+# Intel GPU drivers install
+# https://dgpu-docs.intel.com/devices/hardware-table.html
 ---
 # https://dgpu-docs.intel.com/driver/client/overview.html#installing-client-gpus-on-ubuntu-desktop-24-04-lts
 - name: Add Intel GPU driver key
@@ -23,3 +25,4 @@
     - libze-dev
     - intel-ocloc
 
+# NOTE: https://dgpu-docs.intel.com/driver/client/overview.html#verifying-installation

@@ -1,0 +1,11 @@
+- update fstab /etc/fstab
+- update grub /etc/default/grub
+- create mount points
+- sonarr, radarr, etc., app docker compose templates
+- /etc/smartd.conf
+- /etc/samba/smb.conf
+- /etc/snapraid.conf
+- phoronix-test-suite
+- ASPM power management
+- disable swap
+- bashrc extras, inputrc extras, etc
