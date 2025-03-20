@@ -1,0 +1,66 @@
+# https://docs.ansible.com/ansible/latest/collections/ansible/posix/mount_module.html
+---
+- name: Create mergerfs mount points
+  become: true
+  file:
+    path: '/mnt/disk{{ item }}'
+    state: directory
+  loop: [1, 2, 3, 4, 5, 6, 6, 7, 8, 9, 10]
+
+- name: Create SnapRAID mount points
+  become: true
+  file:
+    path: '/mnt/snapraid{{ item }}'
+    state: directory
+  loop: [1, 2]
+
+- name: Create mergerFS mount point
+  become: true
+  file:
+    path: /mnt/media
+    state: directory
+
+- name: Create scratch disk mount point
+  become: true
+  file:
+    path: /mnt/PM983
+    state: directory
+
+- name: Create scratch disk mount point
+  become: true
+  file:
+    path: /mnt/scratch
+    state: directory
+
+- name: Create app disk mount point
+  become: true
+  file:
+    path: /mnt/SN700
+    state: directory
+
+- name: Add placeholder entries in /etc/fstab
+  become: true
+  blockinfile:
+    backup: true
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR disk mounting options'
+    path: "/etc/fstab"
+    block: |
+      # UPDATE THIS WITH YOUR DISKS
+      # disks in the mergerfs
+      # /dev/disk/by-id/ata-...-part1 /mnt/disk1 xfs defaults,nofail 0 0
+      # x10 disks
+      #
+      # mergerfs volume
+      # /mnt/disk* /mnt/media fuse.mergerfs defaults,nonempty,allow_other,use_ino,cache.files=off,moveonenospc=true,category.create=mfs,dropcacheonclose=true,minfreespace=250G,fsname=mergerfs,gid={{ smb_group }},uid={{ ansible_user }} 0 0
+      #
+      # disks in the SnapRAID
+      # /dev/disk/by-id/ata-...-part1 /mnt/snapraid1 xfs defaults,nofail 0 0
+      #  x2 disks
+      #
+      # NVMe scratch disk
+      # /dev/disk/by-id/nvme-...-part1 /mnt/PM983/ xfs defaults 0 0
+      # /dev/disk/by-id/nvme-...-part1 /mnt/scratch xfs defaults 0 0
+      #
+      # # NVMe app drive
+      # /dev/disk/by-id/nvme-...-part1 /mnt/SN700 xfs defaults 0 0
+

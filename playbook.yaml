@@ -7,6 +7,7 @@
     # might need to manually source this in shell block as well;
     config_file: "/etc/profile.d/media-server-env.sh"
     install_dir: "/usr/local/bin"
+    smb_group: sharing
   tasks:
   # INITIAL SETUP
   - name: get Ubuntu codename
@@ -32,7 +33,8 @@
   - include_tasks: tasks/nvidia_ctk.yaml
   - include_tasks: tasks/nvidia_drivers.yaml
   - include_tasks: tasks/intel_drivers.yaml
-  - include_tasks: tasks/ffmpeg_container.yaml
+  # - include_tasks: tasks/ffmpeg_container.yaml
+  - include_tasks: tasks/disk_setup.yaml
 
 
 
