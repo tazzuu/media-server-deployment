@@ -1,0 +1,10 @@
+---
+# NVIDIA DRIVERS
+# https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/index.html#ubuntu-installation
+- name: Install Nvidia Driver
+  become: true
+  apt:
+    update_cache: true
+    pkg:
+    - nvidia-driver-570
+

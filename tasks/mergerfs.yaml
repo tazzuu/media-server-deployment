@@ -1,0 +1,7 @@
+---
+# INSTALL mergerfs
+# https://trapexit.github.io/mergerfs/setup/installation/
+- name: Install mergerfs
+  become: true
+  apt:
+    deb: https://github.com/trapexit/mergerfs/releases/download/2.40.2/mergerfs_2.40.2.ubuntu-noble_amd64.deb

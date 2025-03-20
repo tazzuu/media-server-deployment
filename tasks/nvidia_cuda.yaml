@@ -1,0 +1,79 @@
+# Install Nvidia CUDA
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
+---
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#network-repo-installation-for-ubuntu
+# https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_network
+- name: Install CUDA toolkit deb
+  become: true
+  apt:
+    deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+
+- name: Install CUDA toolkit
+  become: true
+  apt:
+    update_cache: true
+    pkg:
+    - cuda-toolkit-12-8
+    - cmake
+    - gcc
+
+- name: Install CUDA drivers
+  become: true
+  apt:
+    update_cache: true
+    pkg:
+    - cuda-drivers
+
+- name: Install GPUDirect Filesystem
+  become: true
+  apt:
+    update_cache: true
+    pkg:
+    - nvidia-gds
+
+# https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#environment-setup
+- name: Update PATH for CUDA
+  become: true
+  blockinfile:
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR CUDA in PATH'
+    path: "{{ config_file }}"
+    block: |
+      export PATH="/usr/local/cuda-12.8/bin:$PATH"
+      export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
+
+# Validate CUDA Toolkit installation
+- name: Check if CUDA Samples are installed
+  stat:
+    path: "{{ install_dir }}/cuda-samples/build/Samples/1_Utilities/deviceQuery/deviceQuery"
+  register: cuda_samples_exists
+
+- name: Install CUDA samples
+  # become: true
+  git:
+    repo: 'https://github.com/NVIDIA/cuda-samples.git'
+    # dest: "{{ install_dir }}/cuda-samples"
+    dest: "~/cuda-samples"
+    version: v12.8
+    depth: 1
+  when: not cuda_samples_exists.stat.exists
+
+# https://github.com/abetlen/llama-cpp-python/issues/627
+# https://github.com/NVlabs/instant-ngp/issues/1142
+- name: Compile CUDA samples
+  # become: true
+  shell: |
+    source "{{ config_file }}" && \
+    cd ~/cuda-samples && \
+    mkdir -p build && cd build && \
+    cmake .. && \
+    make -j$(nproc)
+  args:
+    executable: /bin/bash
+  when: not cuda_samples_exists.stat.exists
+
+- name: Move CUDA samples dir
+  become: true
+  command: mv /home/{{ ansible_user }}/cuda-samples "{{ install_dir }}/cuda-samples"
+  args:
+    creates: "{{ install_dir }}/cuda-samples"
+  when: not cuda_samples_exists.stat.exists

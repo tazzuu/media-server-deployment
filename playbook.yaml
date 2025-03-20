@@ -4,9 +4,18 @@
   hosts: "{{ myhosts | default('all') }}" # read from cli or all hosts
   vars:
     # NOTE: ~/.bashrc does not work in non-interactive mode on Ubuntu 24.04
+    # might need to manually source this in shell block as well;
     config_file: "/etc/profile.d/media-server-env.sh"
     install_dir: "/usr/local/bin"
   tasks:
+  # INITIAL SETUP
+  - name: get Ubuntu codename
+    shell: . /etc/os-release && echo "$VERSION_CODENAME"
+    register: ubuntu_codename
+
+  - name: get Ubuntu release
+    shell: uname -r
+    register: ubuntu_release
 
   - name: Create config file
     become: true
@@ -14,265 +23,15 @@
       path: "{{ config_file }}"
       state: touch
 
-  - name: Update apt
-    become: true
-    apt:
-      upgrade: true
-      update_cache: true
+  # RUN TASK SETS
+  - include_tasks: tasks/apt_install_base.yaml
+  - include_tasks: tasks/docker.yaml
+  - include_tasks: tasks/mergerfs.yaml
+  - include_tasks: tasks/snapraid.yaml
+  - include_tasks: tasks/nvidia_cuda.yaml
+  - include_tasks: tasks/nvidia_ctk.yaml
+  - include_tasks: tasks/nvidia_drivers.yaml
 
-  - name: Install packages
-    become: true
-    apt:
-      autoclean: true
-      autoremove: true
-      pkg:
-      - apt-transport-https
-      - bc
-      - btop
-      - build-essential
-      - bzip2
-      - ca-certificates
-      - checkinstall
-      - cifs-utils
-      - clinfo
-      - cmake
-      - cryptsetup
-      - curl
-      - dmidecode
-      - ethtool
-      - fail2ban
-      # - firmware-linux-free
-      # - firmware-linux-nonfree
-      - flatpak
-      # - fuse
-      - freeglut3-dev
-      - g++
-      - gcc
-      - git
-      - glmark2
-      - htop
-      # - ifconfig
-      - intel-gpu-tools
-      # - intel-gsc
-      - intel-media-va-driver-non-free
-      - intel-opencl-icd
-      - iotop
-      - jq
-      - libblkid1
-      - libfreeimage-dev
-      - libglfw3-dev
-      - libglib2.0-dev
-      - libglu1-mesa-dev
-      - libseccomp-dev
-      - libvdpau-dev
-      - libx11-dev
-      - libxmu-dev
-      - libxi-dev
-      - libze1
-      - libze-intel-gpu1
-      # - linux-headers-amd64
-      - lshw
-      - make
-      - mesa-vulkan-drivers
-      - micro
-      - nethogs
-      - net-tools
-      - nmon
-      # - nvidia-container-toolkit
-      # - nvidia-cuda-toolkit
-      # - nvidia-detect
-      # - nvidia-driver
-      - nvme-cli
-      - nvtop
-      - openssh-server
-      - parallel
-      - parted
-      - php
-      - php-curl
-      - php-dom
-      - php-gd
-      - php-simplexml
-      - php-sqlite3
-      - pkg-config
-      - powertop
-      - python3-markdown
-      - rsnapshot
-      - rsync
-      - runc
-      - samba
-      - screen
-      - smartmontools
-      - smbclient
-      - software-properties-common
-      - sqlite3
-      - squashfs-tools
-      - sudo
-      - sysstat
-      - tree
-      - ufw
-      - unzip
-      - xfsprogs
-
-  # DOCKER INSTALL
-  # https://docs.docker.com/engine/install/ubuntu/
-  - name: get Ubuntu codename
-    shell: . /etc/os-release && echo "$VERSION_CODENAME"
-    register: ubuntu_codename
-
-  - name: Add Docker Key
-    become: true
-    apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg
-      state: present
-
-  - name: Add Docker Repo
-    become: true
-    apt_repository:
-      repo: deb https://download.docker.com/linux/ubuntu {{ ubuntu_codename.stdout }} stable
-      state: present
-
-  - name: Install Docker
-    become: true
-    apt:
-      update_cache: true
-      name:
-        - docker-ce
-        - docker-ce-cli
-        - containerd.io
-        - docker-buildx-plugin
-        - docker-compose-plugin
-
-  - name: Add user to Docker group
-    become: true
-    user:
-      name: "{{ ansible_user }}"
-      groups: docker
-      append: yes
-
-  # INSTALL mergerfs
-  # https://trapexit.github.io/mergerfs/setup/installation/
-  - name: Install mergerfs
-    become: true
-    apt:
-      deb: https://github.com/trapexit/mergerfs/releases/download/2.40.2/mergerfs_2.40.2.ubuntu-noble_amd64.deb
-
-  # INSTALL SNAPRAID
-  # https://github.com/amadvance/snapraid ; https://www.snapraid.it/download
-  - name: Check if SnapRAID installed
-    stat:
-      path: "{{ install_dir }}/snapraid"
-    register: snapraid_exists
-
-  - name: Download SnapRAID
-    become: true
-    unarchive:
-      src: https://github.com/amadvance/snapraid/releases/download/v12.4/snapraid-12.4.tar.gz
-      dest: "{{ install_dir }}"
-      remote_src: true
-    when: not snapraid_exists.stat.exists
-
-
-  - name: Install SnapRAID
-    shell: |
-      cd "{{ install_dir }}/snapraid-12.4" && ./configure && make
-    when: not snapraid_exists.stat.exists
-
-  # - name: Symlink SnapRAID
-  #   shell: |
-  #     cd "{{ install_dir }}" && ln -s snapraid-12.4/snapraid
-  #   when: not snapraid_exists.stat.exists
-  - name: Symlink SnapRAID
-    become: true
-    file:
-      src: "{{ install_dir }}/snapraid-12.4/snapraid"
-      dest: "{{ install_dir }}/snapraid"
-      state: link
-
-  # NVIDIA DRIVERS
-  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/
-
-  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#network-repo-installation-for-ubuntu
-  # https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_network
-  - name: Install CUDA toolkit deb
-    become: true
-    apt:
-      deb: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
-
-  - name: Install CUDA toolkit
-    become: true
-    apt:
-      update_cache: true
-      pkg:
-      - cuda-toolkit-12-8
-
-  - name: Install CUDA drivers
-    become: true
-    apt:
-      update_cache: true
-      pkg:
-      - cuda-drivers
-
-  - name: Install GPUDirect Filesystem
-    become: true
-    apt:
-      update_cache: true
-      pkg:
-      - nvidia-gds
-
-  # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/#environment-setup
-  - name: Update PATH for CUDA
-    become: true
-    blockinfile:
-      marker: '# {mark} ANSIBLE MANAGED BLOCK FOR CUDA in PATH'
-      path: "{{ config_file }}"
-      block: |
-        export PATH="/usr/local/cuda-12.8/bin:$PATH"
-        export LD_LIBRARY_PATH=/usr/local/cuda-12.8/lib64:$LD_LIBRARY_PATH
-
-  - name: Install CUDA samples
-    become: true
-    git:
-      repo: 'https://github.com/NVIDIA/cuda-samples.git'
-      dest: "{{ install_dir }}/cuda-samples"
-      version: v12.8
-      depth: 1
-
-  # https://github.com/abetlen/llama-cpp-python/issues/627
-  # https://github.com/NVlabs/instant-ngp/issues/1142
-  - name: Compile CUDA samples
-    become: true
-    shell: |
-      source "{{ config_file }}" && cd "{{ install_dir }}/cuda-samples" && mkdir -p build && cd build && cmake .. && make -j$(nproc)
-    args:
-      executable: /bin/bash
-    # NOTE: test with {{ install_dir }}/cuda-samples/build/Samples/1_Utilities/deviceQuery/deviceQuery
-
-  # https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html
-  - name: Check if Nvidia Container Toolkit is Set up
-    stat:
-      path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    register: nvctk_exists
-
-  - name: Setup Nvidia Container Toolkit
-    shell: |
-      curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
-      && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-        sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-        sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
-    when: not nvctk_exists.stat.exists
-
-  - name: Install Nvidia Container Toolkit
-    become: true
-    apt:
-      update_cache: true
-      pkg:
-      - nvidia-container-toolkit
-
-  - name: Configure Nvidia Container Toolkit
-    shell: |
-      sudo nvidia-ctk runtime configure --runtime=docker
-      sudo systemctl restart docker
-    # sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
 
 
 

@@ -1,0 +1,28 @@
+---
+# INSTALL SNAPRAID
+# https://github.com/amadvance/snapraid ; https://www.snapraid.it/download
+- name: Check if SnapRAID installed
+  stat:
+    path: "{{ install_dir }}/snapraid"
+  register: snapraid_exists
+
+- name: Download SnapRAID
+  become: true
+  unarchive:
+    src: https://github.com/amadvance/snapraid/releases/download/v12.4/snapraid-12.4.tar.gz
+    dest: "{{ install_dir }}"
+    remote_src: true
+  when: not snapraid_exists.stat.exists
+
+
+- name: Install SnapRAID
+  shell: |
+    cd "{{ install_dir }}/snapraid-12.4" && ./configure && make
+  when: not snapraid_exists.stat.exists
+
+- name: Symlink SnapRAID
+  become: true
+  file:
+    src: "{{ install_dir }}/snapraid-12.4/snapraid"
+    dest: "{{ install_dir }}/snapraid"
+    state: link

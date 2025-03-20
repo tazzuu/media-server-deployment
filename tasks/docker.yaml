@@ -1,0 +1,32 @@
+---
+# DOCKER INSTALL
+# https://docs.docker.com/engine/install/ubuntu/
+- name: Add Docker Key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repo
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ubuntu_codename.stdout }} stable
+    state: present
+
+- name: Install Docker
+  become: true
+  apt:
+    update_cache: true
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+
+- name: Add user to Docker group
+  become: true
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes

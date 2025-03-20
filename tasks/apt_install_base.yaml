@@ -1,0 +1,98 @@
+# Install apt packages needed for the entire system and its dependencies
+---
+- name: Update apt
+  become: true
+  apt:
+    upgrade: true
+    update_cache: true
+
+- name: Install packages
+  become: true
+  apt:
+    autoclean: true
+    autoremove: true
+    pkg:
+    - apt-transport-https
+    # - alsa-utils
+    - bc
+    - btop
+    - build-essential
+    - bzip2
+    - ca-certificates
+    - checkinstall
+    - cifs-utils
+    - clinfo
+    - cmake
+    - cryptsetup
+    - curl
+    - dmidecode
+    - ethtool
+    - fail2ban
+    # - firmware-linux-free
+    # - firmware-linux-nonfree
+    - flatpak
+    # - fuse
+    - freeglut3-dev
+    - g++
+    - gcc
+    - git
+    - glmark2
+    - htop
+    # - ifconfig
+    - intel-gpu-tools
+    # - intel-gsc
+    - intel-media-va-driver-non-free
+    - intel-opencl-icd
+    - iotop
+    - jq
+    - libblkid1
+    - libfreeimage-dev
+    - libglfw3-dev
+    - libglib2.0-dev
+    - libglu1-mesa-dev
+    - libseccomp-dev
+    - libvdpau-dev
+    - libx11-dev
+    - libxmu-dev
+    - libxi-dev
+    - libze1
+    - libze-intel-gpu1
+    # - linux-headers-{{ ubuntu_release.stdout }} # I think this breaks the CUDA version?
+    - lshw
+    - make
+    - mesa-vulkan-drivers
+    - micro
+    - nethogs
+    - net-tools
+    - nmon
+    - nvme-cli
+    - nvtop
+    - openssh-server
+    - parallel
+    - parted
+    - php
+    - php-curl
+    - php-dom
+    - php-gd
+    - php-simplexml
+    - php-sqlite3
+    - pkg-config
+    - powertop
+    - python3-markdown
+    - rsnapshot
+    - rsync
+    - runc
+    - samba
+    - screen
+    - smartmontools
+    - smbclient
+    - software-properties-common
+    - sqlite3
+    - squashfs-tools
+    - sudo
+    - sysstat
+    - tree
+    - ubuntu-drivers-common
+    - ufw
+    - unzip
+    - xfsprogs
