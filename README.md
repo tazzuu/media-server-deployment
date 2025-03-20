@@ -22,7 +22,7 @@ ssh-keygen -f dev-key
 Launch the dev server VM
 
 ```bash
-./launch
+./launch-dev-server.sh
 ```
 
 Check that ssh access works
@@ -60,3 +60,9 @@ Debug the dev server with
 ```bash
 ssh -i dev-key ubuntu@$(./get-ip.sh)
 ````
+
+Delete the dev server with
+
+```bash
+./remove-dev-server.sh
+```
