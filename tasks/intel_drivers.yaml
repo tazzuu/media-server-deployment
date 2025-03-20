@@ -1,0 +1,25 @@
+---
+# https://dgpu-docs.intel.com/driver/client/overview.html#installing-client-gpus-on-ubuntu-desktop-24-04-lts
+- name: Add Intel GPU driver key
+  shell: |
+    wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | \
+    sudo gpg --yes --dearmor --output /usr/share/keyrings/intel-graphics.gpg
+
+    echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu noble unified" | \
+    sudo tee /etc/apt/sources.list.d/intel-gpu-noble.list
+  args:
+    creates: "/etc/apt/sources.list.d/intel-gpu-noble.list"
+
+- name: Install Intel GPU drivers
+  become: true
+  apt:
+    update_cache: true
+    pkg:
+    - libze-intel-gpu1
+    - libze1
+    - intel-opencl-icd
+    - clinfo
+    - intel-gsc
+    - libze-dev
+    - intel-ocloc
+
