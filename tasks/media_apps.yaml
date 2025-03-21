@@ -1,0 +1,27 @@
+---
+- name: Set up media apps dir
+  file:
+    path: "{{ apps_dir }}"
+    state: directory
+
+- name: Set up media apps config dir
+  file:
+    path: "{{ apps_config_dir }}"
+    state: directory
+
+- name: Add app templates
+  template:
+    src: "templates/{{ item }}"
+    dest: "{{ apps_dir }}/{{ item }}"
+  loop:
+    - ".env"
+    - "docker-compose.yaml"
+    - "bazarr.yml"
+    - "plex.yaml"
+    - "sonarr.yaml"
+    - "lidarr.yaml"
+    - "radarr.yaml"
+    - "prowlarr.yaml"
+    - "sabnzbd.yaml"
+    - "scrutiny.yaml"
+    - "tautulli.yaml"

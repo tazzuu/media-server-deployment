@@ -1,0 +1,16 @@
+# sudo ufw allow 7878
+---
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=EST
+    volumes:
+      - $CONFIG_DIR/radarr:/config
+      - $MEDIA_DIR:$MEDIA_DIR
+    ports:
+      - 7878:7878
+    restart: unless-stopped

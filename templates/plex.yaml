@@ -1,0 +1,27 @@
+# https://docs.linuxserver.io/images/docker-plex/
+# login at 192.168.1.x:32400/web/
+---
+services:
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    network_mode: host
+    # TODO: include alternate Intel GPU usage here
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=EST
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    volumes:
+      - $APP_DIR/plex:/config
+      - $MEDIA_DIR/TV:$MEDIA_DIR/TV:ro
+      - $MEDIA_DIR/Movies:$MEDIA_DIR/Movies:ro
+    restart: unless-stopped

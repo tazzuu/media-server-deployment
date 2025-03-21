@@ -1,6 +1,4 @@
-- update fstab /etc/fstab
 - update grub /etc/default/grub
-- create mount points
 - sonarr, radarr, etc., app docker compose templates
 - /etc/smartd.conf
 - /etc/samba/smb.conf
@@ -9,3 +7,10 @@
 - ASPM power management
 - disable swap
 - bashrc extras, inputrc extras, etc
+- ufw
+- tdarr
+- phoronix
+- immich
+- diskover
+- smartmontools scripts
+- snapraid runner

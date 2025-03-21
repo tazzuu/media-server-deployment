@@ -1,0 +1,19 @@
+services:
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=EST
+    volumes:
+      - $APP_DIR/sabnzbd:/config
+      # tmp download dir ; make sure this exists
+      - $SCRATCH_DIR/Downloads:$SCRATCH_DIR/Downloads
+      # final destination ; make sure this exists
+      - $MEDIA_DIR/Downloads:$MEDIA_DIR/Downloads
+      # dir to drop .nzb files for loading downloads manually
+      - $MEDIA_DIR/watched:$MEDIA_DIR/watched
+    ports:
+      - 8080:8080
+    restart: unless-stopped
