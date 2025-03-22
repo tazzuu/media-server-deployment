@@ -1,5 +1,4 @@
 - update grub /etc/default/grub
-- sonarr, radarr, etc., app docker compose templates
 - /etc/smartd.conf
 - /etc/samba/smb.conf
 - /etc/snapraid.conf
@@ -14,3 +13,8 @@
 - diskover
 - smartmontools scripts
 - snapraid runner
+- update mount points for appdrive, media drive, cache drive
+
+DONE
+
+- ~~sonarr, radarr, etc., app docker compose templates~~
