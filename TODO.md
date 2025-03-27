@@ -14,6 +14,7 @@
 - smartmontools scripts
 - snapraid runner
 - update mount points for appdrive, media drive, cache drive
+- update kernel / GRUB for IOMMU
 
 DONE
 
