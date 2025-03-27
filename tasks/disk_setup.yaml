@@ -17,7 +17,7 @@
 - name: Create mergerFS mount point
   become: true
   file:
-    path: /mnt/media
+    path: "{{ media_mountpoint }}"
     state: directory
 
 - name: Create scratch disk mount point

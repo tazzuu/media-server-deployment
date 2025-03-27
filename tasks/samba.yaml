@@ -1,0 +1,36 @@
+# create shareuser group
+# add user to shareuser group
+# make sure that mount points have group ownership
+# update samb conf
+# testparm
+---
+- name: Create Samba SMB user group
+  group:
+    name: "{{ smb_group }}"
+    state: present
+
+- name: Add user primary user {{ ansible_user }} to group
+  user:
+    name: "{{ ansible_user }}"
+    append: true
+    groups: "{{ smb_group }}"
+
+- name: Create sharing user account
+  user:
+    name: "{{ sharing_user }}"
+    groups: "{{ smb_group }}"
+    append: true
+
+- name: Update Samba conf
+  become: true
+  blockinfile:
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR Media SMB SHARE'
+    path: "/etc/samba/smb.conf"
+    block: |
+      [Media]
+      path = {{ media_mountpoint }}
+      valid users = @{{ sharing_user }}
+      browsable = yes
+      read only = yes
+      create mask = 0664
+      directory mask = 0775

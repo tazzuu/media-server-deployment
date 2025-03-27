@@ -10,6 +10,9 @@
     apps_dir: "/home/{{ ansible_user }}/apps"
     apps_config_dir: "/home/{{ ansible_user }}/apps/config" # make sure this matches templates/.env
     smb_group: sharing
+    smb_user: "{{ ansible_user }}"
+    sharing_user: sharing
+    media_mountpoint: "/mnt/media"
   tasks:
   # INITIAL SETUP
   - name: get Ubuntu codename
