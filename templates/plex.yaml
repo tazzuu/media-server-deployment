@@ -21,6 +21,7 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
+      # TODO: add scratch disk for transcode cache
       - $APP_DIR/plex:/config
       - $MEDIA_DIR/TV:$MEDIA_DIR/TV:ro
       - $MEDIA_DIR/Movies:$MEDIA_DIR/Movies:ro

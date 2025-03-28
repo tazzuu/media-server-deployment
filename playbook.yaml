@@ -13,6 +13,8 @@
     smb_user: "{{ ansible_user }}"
     sharing_user: sharing
     media_mountpoint: "/mnt/media"
+    apps_mountpoint: "/mnt/apps" # APP_DIR
+    scratch_mountpoint: "/mnt/scratch" # SCRATCH_DIR
   tasks:
   # INITIAL SETUP
   - name: get Ubuntu codename
@@ -40,7 +42,7 @@
   - include_tasks: tasks/intel_drivers.yaml
   # - include_tasks: tasks/ffmpeg_container.yaml # TODO: fix this
   - include_tasks: tasks/disk_setup.yaml
-  - include_tasks: tasks/media_apps.yaml
+  - include_tasks: tasks/apps.yaml
 
 
 

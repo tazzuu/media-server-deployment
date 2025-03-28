@@ -40,6 +40,12 @@ ssh -i dev-key ubuntu@10.122.12.69
 - https://github.com/alexellis/k3sup/issues/315
 - https://www.linode.com/docs/guides/configure-and-secure-servers-with-cloud-init/
 
+## Pre-Deployment Setup
+
+On your real server you will need to (temporarily) disable the password for `sudo`
+
+- https://askubuntu.com/questions/147241/execute-sudo-without-password
+
 ## Ansible Setup
 
 Use Ansible to configure the server
@@ -52,8 +58,16 @@ sudo apt install ansible
 Run Playbook
 
 ```bash
+# using dev server
 ansible-playbook --private-key dev-key --user ubuntu -i $(./get-ip.sh), playbook.yaml
+
+# OR
+
+# using your real server
+ansible-playbook --private-key ~/.ssh/my-key --user $USER -i 192.168.1.2, playbook.yaml
 ```
+
+### Dev server usage
 
 Debug the dev server with
 
@@ -66,3 +80,17 @@ Delete the dev server with
 ```bash
 ./remove-dev-server.sh
 ```
+
+
+## Post Deployment Steps
+
+These need to be done manually
+
+- resive the root volume
+  - https://askubuntu.com/questions/1417938/ubuntu-does-not-use-full-disk-space-how-to-extend
+
+```bash
+sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+```
+- disable swap in /etc/fstab
+- import dotfiles
