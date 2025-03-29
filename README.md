@@ -28,7 +28,13 @@ Launch the dev server VM
 Check that ssh access works
 
 ```bash
-ssh -i dev-key ubuntu@10.122.12.69
+ssh -i dev-key ubuntu@$(./get-ip.sh)
+````
+
+Delete the dev server with
+
+```bash
+./remove-dev-server.sh
 ```
 
 ### Multipass Resources
@@ -45,6 +51,10 @@ ssh -i dev-key ubuntu@10.122.12.69
 On your real server you will need to (temporarily) disable the password for `sudo`
 
 - https://askubuntu.com/questions/147241/execute-sudo-without-password
+
+You will also need to create a local ssh key (`ssh-keygen`) and copy the public key to the remote server under `~/.ssh/authorized_keys`.
+
+Make sure that when you installed Ubuntu onto the real server you elected to install and enable the OpenSSH server service.
 
 ## Ansible Setup
 
@@ -66,21 +76,6 @@ ansible-playbook --private-key dev-key --user ubuntu -i $(./get-ip.sh), playbook
 # using your real server
 ansible-playbook --private-key ~/.ssh/my-key --user $USER -i 192.168.1.2, playbook.yaml
 ```
-
-### Dev server usage
-
-Debug the dev server with
-
-```bash
-ssh -i dev-key ubuntu@$(./get-ip.sh)
-````
-
-Delete the dev server with
-
-```bash
-./remove-dev-server.sh
-```
-
 
 ## Post Deployment Steps
 
