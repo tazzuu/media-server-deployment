@@ -89,3 +89,28 @@ sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
 ```
 - disable swap in /etc/fstab
 - import dotfiles
+- format any new disks
+
+```bash
+# identify unformatted disk
+sudo parted -l
+# or lsblk -f
+
+# make partition table
+# PUT YOUR DISK HERE
+sudo parted /dev/nvme1n1 mklabel gpt
+
+# make partition
+sudo parted -a opt /dev/nvme1n1 mkpart primary xfs 0% 100%
+
+# format the partition ; NOTE we are addressing the partition here p1
+sudo mkfs.xfs /dev/nvme1n1p1
+
+# find UUID with lsblk -f and add to /etc/fstab with /dev/disk/by-id/
+# mount with
+sudo mount -a
+
+# update permissions on mounted volume
+sudo chown -R username /mnt/apps
+sudo chgrp -R username /mnt/apps
+```
