@@ -11,7 +11,7 @@
     apps_config_dir: "/home/{{ ansible_user }}/apps/config" # make sure this matches templates/.env
     smb_group: sharing
     smb_user: "{{ ansible_user }}"
-    sharing_user: sharing
+    sharing_user: shareuser
     media_mountpoint: "/mnt/media"
     apps_mountpoint: "/mnt/apps" # APP_DIR
     scratch_mountpoint: "/mnt/scratch" # SCRATCH_DIR
@@ -40,9 +40,11 @@
   - include_tasks: tasks/nvidia_ctk.yaml
   - include_tasks: tasks/nvidia_drivers.yaml
   - include_tasks: tasks/intel_drivers.yaml
-  # - include_tasks: tasks/ffmpeg_container.yaml # TODO: fix this
+  - include_tasks: tasks/ffmpeg_container.yaml # TODO: fix this
   - include_tasks: tasks/disk_setup.yaml
-  - include_tasks: tasks/apps.yaml
+  - include_tasks: tasks/samba.yaml
+  - include_tasks: tasks/phoronix.yaml
+  # - include_tasks: tasks/apps.yaml
 
 
 

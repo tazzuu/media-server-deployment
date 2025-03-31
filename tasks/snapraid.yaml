@@ -26,3 +26,60 @@
     src: "{{ install_dir }}/snapraid-12.4/snapraid"
     dest: "{{ install_dir }}/snapraid"
     state: link
+
+- name: Update SnapRAID Conf
+  become: true
+  blockinfile:
+    create: true
+    backup: true
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR SnapRAID conf'
+    path: "/etc/snapraid.conf"
+    block: |
+      parity /mnt/snapraid1/snapraid.parity
+      2-parity /mnt/snapraid2/snapraid.2-parity
+      content /var/snapraid/snapraid.content
+      content /mnt/disk1/snapraid.content
+      content /mnt/disk2/snapraid.content
+      content /mnt/disk3/snapraid.content
+      content /mnt/disk4/snapraid.content
+      content /mnt/disk5/snapraid.content
+      content /mnt/disk6/snapraid.content
+      content /mnt/disk7/snapraid.content
+      content /mnt/disk8/snapraid.content
+
+      data d1 /mnt/disk1/
+      data d2 /mnt/disk2/
+      data d3 /mnt/disk3/
+      data d4 /mnt/disk4/
+      data d5 /mnt/disk5/
+      data d6 /mnt/disk6/
+      data d7 /mnt/disk7/
+      data d8 /mnt/disk8/
+      data d9 /mnt/disk9/
+
+      # Excludes hidden files and directories
+      exclude *.unrecoverable
+      exclude /tmp/
+      exclude /lost+found/
+      exclude downloads/
+      exclude Downloads/
+      exclude appdata/
+      exclude *.!sync
+      exclude *.unrecoverable
+      exclude /tmp/
+      exclude /lost+found/
+      exclude appdata/
+      exclude .DS_Store
+      exclude ._.DS_Store
+      exclude .Thumbs.db
+      exclude .fseventsd
+      exclude .Spotlight-V100
+      exclude .TemporaryItems
+      exclude .Trashes
+      exclude .nfo
+
+- name: Create SnapRAID content dir on root
+  become: true
+  file:
+    path: /var/snapraid
+    owner: "{{ ansible_user }}"

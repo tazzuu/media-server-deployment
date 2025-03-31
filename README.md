@@ -86,8 +86,10 @@ These need to be done manually
 
 ```bash
 sudo lvextend -l +100%FREE /dev/mapper/ubuntu--vg-ubuntu--lv
+sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
 ```
-- disable swap in /etc/fstab
+
+- disable swap in /etc/fstab (by commenting out the line that makes a swap volume)
 - import dotfiles
 - format any new disks
 
@@ -114,3 +116,35 @@ sudo mount -a
 sudo chown -R username /mnt/apps
 sudo chgrp -R username /mnt/apps
 ```
+
+- update Grub settings to fix potential boot / reboot issues if needed
+  -
+```bash
+sudo nano /etc/default/grub
+
+# GRUB_CMDLINE_LINUX_DEFAULT="reboot=bios"
+
+sudo update-grub
+```
+
+- copy over your existing app configs from the old server to the new one (`rsync`) under the designated locations
+
+- run some stress tests
+
+```bash
+# run this with `nice` if you dont want the system to lock up
+stress-ng --matrix 0 -t 1m
+```
+
+- complete the Phoronix Test Suite installation and run a test
+
+```bash
+cd ~/phoronix-test-suite
+sudo ./install-sh
+# this downloads a lot of test files
+phoronix-test-suite benchmark svt-av1
+```
+
+----
+
+

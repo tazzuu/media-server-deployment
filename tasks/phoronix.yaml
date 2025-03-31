@@ -1,0 +1,7 @@
+# install Phoronix test suite https://github.com/phoronix-test-suite/phoronix-test-suite
+---
+- name: Install Phoronix test suite
+  git:
+    repo: https://github.com/phoronix-test-suite/phoronix-test-suite.git
+    dest: "/home/{{ ansible_user }}/phoronix-test-suite"
+    version: e1fdc09426136035743b509a6f963a237324ffd2

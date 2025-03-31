@@ -35,6 +35,7 @@
 - name: Update PATH for CUDA
   become: true
   blockinfile:
+    backup: true
     marker: '# {mark} ANSIBLE MANAGED BLOCK FOR CUDA in PATH'
     path: "{{ config_file }}"
     block: |

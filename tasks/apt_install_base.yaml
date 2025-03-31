@@ -89,6 +89,7 @@
     - software-properties-common
     - sqlite3
     - squashfs-tools
+    - stress-ng
     - sudo
     - sysstat
     - tree

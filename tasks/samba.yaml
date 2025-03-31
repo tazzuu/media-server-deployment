@@ -9,13 +9,14 @@
     name: "{{ smb_group }}"
     state: present
 
-- name: Add user primary user {{ ansible_user }} to group
+- name: Add user primary user "{{ ansible_user }}" to group
   user:
     name: "{{ ansible_user }}"
     append: true
     groups: "{{ smb_group }}"
 
 - name: Create sharing user account
+  become: true
   user:
     name: "{{ sharing_user }}"
     groups: "{{ smb_group }}"
@@ -24,6 +25,7 @@
 - name: Update Samba conf
   become: true
   blockinfile:
+    backup: true
     marker: '# {mark} ANSIBLE MANAGED BLOCK FOR Media SMB SHARE'
     path: "/etc/samba/smb.conf"
     block: |
@@ -34,3 +36,6 @@
       read only = yes
       create mask = 0664
       directory mask = 0775
+
+- name: Validate Samba conf
+  command: testparm --suppress-prompt
