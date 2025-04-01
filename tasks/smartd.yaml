@@ -1,0 +1,44 @@
+# configure the smartmontools daemon
+# https://help.ubuntu.com/community/Smartmontools
+# https://manpages.ubuntu.com/manpages/noble/man5/smartd.conf.5.html
+# https://github.com/LibreIT/ansible-smartd/blob/master/tasks/main.yml
+---
+# - name: Configure SMART daemon
+- name: list disks present in the system
+  shell: smartctl --scan | awk '{print $1}'
+  register: disks
+
+- name: Update smartd config file
+  become: true
+  template:
+    backup: true
+    dest: /etc/smartd.conf
+    src: templates/smartd.j2
+    owner: root
+    group: root
+    mode: 0644
+
+# - name: Create smartd config file
+#   become: true
+#   blockinfile:
+#     create: true
+#     backup: true
+#     marker: '# {mark} ANSIBLE MANAGED BLOCK FOR SMART Daemon conf'
+#     path: /etc/smartd.conf # "/home/{{ ansible_user }}/smartd.conf" #
+#     insertbefore: DEVICESCAN # there is a pre-loaded DEVICESCAN we need to insert before it for these directives to work
+#     block: |
+#       # -a       : Enable all SMART tests and checks.
+#       # -o on    : Enable automatic offline data collection.
+#       # -S on    : Enable automatic attribute autosave.
+#       #   - A long self-test every 30 days at 3:00 AM.
+#       #   - A short self-test every 7 days at 1:00 AM.
+#       {% for disk in disks.stdout_lines %}
+#       {{ disk }} -a -o on -S on -s L/../../30/03 -s S/../../7/01
+#       {% endfor %}
+
+- name: Reload smartd service
+  systemd_service:
+    name: smartd
+    enabled: true
+    state: restarted
+  ignore_errors: yes

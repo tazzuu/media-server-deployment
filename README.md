@@ -145,6 +145,15 @@ sudo ./install-sh
 phoronix-test-suite benchmark svt-av1
 ```
 
+- make sure `smartd` is running the `smartmontools` daemon and check its status and configs to make sure they look right
+
+```bash
+sudo systemctl status smartd
+# to restart
+# sudo systemctl restart smartd
+cat /etc/smartd.conf
+```
+
 ----
 
 

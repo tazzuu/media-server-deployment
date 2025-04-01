@@ -1,11 +1,7 @@
 - update grub /etc/default/grub
-- /etc/smartd.conf
-- /etc/snapraid.conf
-- phoronix-test-suite
 - ASPM power management
 - ufw setup
 - tdarr
-- smartmontools scripts
 - snapraid runner
 - add Plex transcode cache volume
 - add Intel transcode driver option for Plex docker compose
@@ -19,6 +15,10 @@ DONE
 - ~~update kernel / GRUB for IOMMU~~
   - should work out of the box with defaults
 - ~~fail2ban install~~
+- ~~phoronix-test-suite~~
+- ~~/etc/smartd.conf~~
+- ~~/etc/snapraid.conf~~
+- ~~smartmontools scripts~~
 
 WONT DO
 

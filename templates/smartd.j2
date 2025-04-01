@@ -1,0 +1,8 @@
+# -a       : Enable all SMART tests and checks.
+# -o on    : Enable automatic offline data collection.
+# -S on    : Enable automatic attribute autosave.
+#   - A long self-test every 30 days at 3:00 AM.
+#   - A short self-test every 7 days at 1:00 AM.
+{% for disk in disks.stdout_lines %}
+{{ disk }} -a -o on -S on -s L/../../30/03 -s S/../../7/01
+{% endfor %}

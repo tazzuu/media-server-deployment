@@ -44,6 +44,7 @@
   - include_tasks: tasks/disk_setup.yaml
   - include_tasks: tasks/samba.yaml
   - include_tasks: tasks/phoronix.yaml
+  - include_tasks: tasks/smartd.yaml
   # - include_tasks: tasks/apps.yaml
 
 
