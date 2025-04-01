@@ -3,8 +3,7 @@
 # docker compose pull
 ---
 include:
-  - "bazarr.yml"
-  - "plex.yaml"
+  - "bazarr.yaml"
   - "sonarr.yaml"
   - "lidarr.yaml"
   - "radarr.yaml"

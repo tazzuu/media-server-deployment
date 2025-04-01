@@ -36,9 +36,11 @@
 #       {{ disk }} -a -o on -S on -s L/../../30/03 -s S/../../7/01
 #       {% endfor %}
 
-- name: Reload smartd service
-  systemd_service:
-    name: smartd
-    enabled: true
-    state: restarted
-  ignore_errors: yes
+
+# NOTE: This never seems to work so just skip this do it manually
+# - name: Reload smartd service
+#   systemd_service:
+#     name: smartd
+#     enabled: true
+#     state: restarted
+#   ignore_errors: yes

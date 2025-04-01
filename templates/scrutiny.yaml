@@ -1,36 +1,26 @@
 # run with internal db
-scrutiny:
-  container_name: scrutiny
-  image: ghcr.io/analogj/scrutiny:master-omnibus
-  cap_add:
-    - SYS_RAWIO
-    - SYS_ADMIN
-  environment:
-    # TODO: move this to app dir maybe
-    - COLLECTOR_LOG_FILE=/opt/scrutiny/config/collector.log
-  ports:
-    # on-host:inside-container
-    - "8081:8080" # webapp
-    # this one conflicts with the other influxdb on server host so maybe dont bind this
-    #- "8086:8086" # influxDB admin
-  volumes:
-    - /run/udev:/run/udev:ro
-    - $CONFIG_DIR/scrutiny:/opt/scrutiny/config
-    - $APP_DIR/scrutiny-influxdb:/opt/scrutiny/influxdb
-  devices:
-    # TODO: make sure this is correct
-    - "/dev/sda"
-    - "/dev/sdb"
-    - "/dev/sdc"
-    - "/dev/sdd"
-    - "/dev/sde"
-    - "/dev/sdf"
-    - "/dev/sdg"
-    - "/dev/sdh"
-    - "/dev/sdi"
-    - "/dev/sdj"
-    - "/dev/sdk"
-    - "/dev/sdl"
-    - /dev/nvme0
-    - /dev/nvme1
-  restart: unless-stopped
+services:
+  scrutiny:
+    container_name: scrutiny
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
+    environment:
+      # TODO: move this to app dir maybe
+      - COLLECTOR_LOG_FILE=/opt/scrutiny/config/collector.log
+    ports:
+      # on-host:inside-container
+      - "8081:8080" # webapp
+      # this one conflicts with the other influxdb on server host so maybe dont bind this
+      #- "8086:8086" # influxDB admin
+    volumes:
+      - /run/udev:/run/udev:ro
+      - $CONFIG_DIR/scrutiny:/opt/scrutiny/config
+      - $APP_DIR/scrutiny-influxdb:/opt/scrutiny/influxdb
+    devices:
+    {% for disk in disks.stdout_lines %}
+    - {{ disk }}
+    {% endfor %}
+    #
+    restart: unless-stopped

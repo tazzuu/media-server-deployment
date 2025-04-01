@@ -8,7 +8,7 @@ services:
       - TZ=EST
     volumes:
       # TODO: review if this should be in CONFIG_DIR or APP_DIR based on disk usage
-      - $APP_DIR/tautulli:/config
+      - $CONFIG_DIR/tautulli:/config
       # get the plex server's logs from local disk
       - $APP_DIR/plex/Library/Application Support/Plex Media Server/Logs:/plexmediaserver-logs:ro
     ports:
