@@ -56,7 +56,7 @@ You will also need to create a local ssh key (`ssh-keygen`) and copy the public 
 
 Make sure that when you installed Ubuntu onto the real server you elected to install and enable the OpenSSH server service.
 
-## Ansible Setup
+## Server Deployment
 
 Use Ansible to configure the server
 
@@ -79,7 +79,7 @@ ansible-playbook --private-key ~/.ssh/my-key --user $USER -i 192.168.1.2, playbo
 
 ## Post Deployment Steps
 
-These need to be done manually
+These need to be done manually so that you can inspect each step to make sure it matches your system requirements.
 
 - resive the root volume
   - https://askubuntu.com/questions/1417938/ubuntu-does-not-use-full-disk-space-how-to-extend
@@ -90,7 +90,7 @@ sudo resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
 ```
 
 - disable swap in /etc/fstab (by commenting out the line that makes a swap volume)
-- import dotfiles
+- import your custom dotfiles
 - format any new disks
 
 ```bash
@@ -154,6 +154,17 @@ sudo systemctl status smartd
 cat /etc/smartd.conf
 ```
 
-----
+- enable the firewall and allow services
 
+```bash
+sudo ufw enable
+sudo ufw allow OpenSSH
+sudo ufw allow Samba
+# for the media services to communicate with each other
+sudo ufw allow 9696
+sudo ufw allow 7878
+sudo ufw allow 8989
+```
+
+- create the required subdirs on the app drive and scratch drive, copy over your old app and service configs to their appropriate config dirs
 

@@ -1,6 +1,5 @@
 - update grub /etc/default/grub
 - ASPM power management
-- ufw setup
 - tdarr
 - snapraid runner
 - add Plex transcode cache volume
@@ -19,6 +18,7 @@ DONE
 - ~~/etc/smartd.conf~~
 - ~~/etc/snapraid.conf~~
 - ~~smartmontools scripts~~
+- ~~ufw setup~~
 
 WONT DO
 
