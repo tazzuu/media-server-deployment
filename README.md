@@ -60,12 +60,12 @@ Make sure that when you installed Ubuntu onto the real server you elected to ins
 
 Use Ansible to configure the server
 
-Install Ansible
+Install Ansible locally on the system you want to deploy from (e.g. your laptop)
 
 ```bash
 sudo apt install ansible
 ```
-Run Playbook
+Run Playbook to run the tasks on the remote server (the one you are deploying to)
 
 ```bash
 # using dev server
@@ -168,4 +168,11 @@ sudo ufw allow 8080
 ```
 
 - create the required subdirs on the app drive and scratch drive, copy over your old app and service configs to their appropriate config dirs
+
+- set power saving mode in BIOS
+  - or software
+
+```bash
+sudo powerprofilesctl set power-saver
+```
 

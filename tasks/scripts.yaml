@@ -1,0 +1,11 @@
+---
+- name: Make scripts dir
+  file:
+    state: directory
+    path: "{{ scripts_dir }}"
+
+- name: Copy scripts - SMART
+  copy:
+    force: false
+    src: scripts/smart_test_long_all.sh
+    dest: "{{ scripts_dir }}/smart_test_long_all.sh"

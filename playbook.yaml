@@ -15,6 +15,7 @@
     media_mountpoint: "/mnt/media"
     apps_mountpoint: "/mnt/apps" # APP_DIR
     scratch_mountpoint: "/mnt/scratch" # SCRATCH_DIR
+    scripts_dir: "/home/{{ ansible_user }}/scripts"
   tasks:
   # INITIAL SETUP
   - name: get Ubuntu codename
@@ -46,6 +47,7 @@
   - include_tasks: tasks/phoronix.yaml
   - include_tasks: tasks/smartd.yaml
   - include_tasks: tasks/apps.yaml
+  - include_tasks: tasks/scripts.yaml
 
 
 

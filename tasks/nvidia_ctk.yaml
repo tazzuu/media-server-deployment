@@ -20,8 +20,40 @@
     pkg:
     - nvidia-container-toolkit
 
+- name: Make sure Docker daemon JSON exists
+  become: true
+  file:
+    path: /etc/docker/daemon.json
+    state: touch
+
+- name: Check if we need to configure the Nvidia Container Toolkit
+  # become: true
+  lineinfile:
+    # create: true
+    path: /etc/docker/daemon.json
+    regexp: ".*nvidia-container-runtime.*"
+    state: absent
+  check_mode: yes
+  changed_when: false
+  register: missing_ctk
+
+
 - name: Configure Nvidia Container Toolkit
   shell: |
     sudo nvidia-ctk runtime configure --runtime=docker
     sudo systemctl restart docker
+  when: not missing_ctk.found
+
+  # NOTE: Test with:
   # sudo docker run --rm --runtime=nvidia --gpus all ubuntu nvidia-smi
+
+  # NOTE: write this file:
+  # $ cat /etc/docker/daemon.json
+  # {
+  #     "runtimes": {
+  #         "nvidia": {
+  #             "args": [],
+  #             "path": "nvidia-container-runtime"
+  #         }
+  #     }
+  # }

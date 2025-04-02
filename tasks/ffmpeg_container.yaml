@@ -4,6 +4,12 @@
     repo: "https://github.com/tazzuu/ffmpeg-av1"
     dest: "/home/{{ ansible_user }}/ffmpeg-av1"
 
+- name: Check if Docker container exists
+  shell: docker inspect ffmpeg-av1:7.1.1 1>/dev/null
+  ignore_errors: true
+  register: ffmpeg_exists
+
 - name: Build ffmpeg container
   shell: |
     cd "/home/{{ ansible_user }}/ffmpeg-av1" && docker build -t ffmpeg-av1:7.1.1 .
+  when: not ffmpeg_exists.rc == 0

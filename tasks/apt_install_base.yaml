@@ -9,8 +9,8 @@
 - name: Install packages
   become: true
   apt:
-    autoclean: true
-    autoremove: true
+    # autoclean: true
+    # autoremove: true # NOTE: maybe dont use this it might break downsteam steps on repeated runs
     pkg:
     - apt-transport-https
     # - alsa-utils
@@ -78,10 +78,11 @@
     - php-sqlite3
     - pkg-config
     - powertop
+    - power-profiles-daemon
     - python3-markdown
     - rsnapshot
     - rsync
-    - runc
+    # - runc # NOTE: dont isntall this here it conflicts with the Docker install later
     - samba
     - screen
     - smartmontools
