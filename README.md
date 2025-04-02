@@ -165,6 +165,8 @@ sudo ufw allow 9696
 sudo ufw allow 7878
 sudo ufw allow 8989
 sudo ufw allow 8080
+# for plex
+sudo ufw allow 32400
 ```
 
 - create the required subdirs on the app drive and scratch drive, copy over your old app and service configs to their appropriate config dirs
