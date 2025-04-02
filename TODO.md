@@ -1,8 +1,6 @@
 - update grub /etc/default/grub
-- ASPM power management
 - tdarr
 - snapraid runner
-- add Plex transcode cache volume
 - add Intel transcode driver option for Plex docker compose
 - fix reboot option ; https://askubuntu.com/questions/7114/why-cant-i-restart-shutdown
 - lm-sensors
@@ -22,9 +20,14 @@ DONE
 - ~~/etc/snapraid.conf~~
 - ~~smartmontools scripts~~
 - ~~ufw setup~~
+- ~~ASPM power management~~
+  - needs to be done in BIOS, the OS one is lousy
+
 
 WONT DO
 
 - ~~bashrc extras, inputrc extras, etc~~
 - ~~immich~~
 - ~~diskover~~
+- ~~add Plex transcode cache volume~~
+  - this needs to be configured inside the app, we already put the app on fast storage so thats good enough

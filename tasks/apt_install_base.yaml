@@ -58,6 +58,7 @@
     - libze1
     - libze-intel-gpu1
     # - linux-headers-{{ ubuntu_release.stdout }} # I think this breaks the CUDA version?
+    - lm-sensors
     - lshw
     - make
     - mesa-vulkan-drivers
@@ -78,6 +79,7 @@
     - php-sqlite3
     - pkg-config
     - powertop
+    - powerstat
     - power-profiles-daemon
     - python3-markdown
     - rsnapshot
