@@ -3,9 +3,9 @@
 - snapraid runner
 - add Intel transcode driver option for Plex docker compose
 - fix reboot option ; https://askubuntu.com/questions/7114/why-cant-i-restart-shutdown
-- lm-sensors
-- powerstat
-- maintainerr https://github.com/jorenn92/Maintainerr
+
+
+
 
 DONE
 
@@ -31,3 +31,7 @@ WONT DO
 - ~~diskover~~
 - ~~add Plex transcode cache volume~~
   - this needs to be configured inside the app, we already put the app on fast storage so thats good enough
+- ~~maintainerr https://github.com/jorenn92/Maintainerr~~
+  - had issues with installation skip this
+- ~~lm-sensors~~
+- ~~powerstat~~

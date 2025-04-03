@@ -11,3 +11,4 @@ include:
   - "sabnzbd.yaml"
   - "scrutiny.yaml"
   - "tautulli.yaml"
+  # - "maintainerr.yaml" # disable this due to issues https://github.com/jorenn92/Maintainerr/issues/536

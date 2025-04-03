@@ -48,6 +48,7 @@
     - "prowlarr"
     - "scrutiny"
     - "tautulli"
+    - "maintainerr"
 
 - name: Add app services templates
   template:
@@ -65,3 +66,4 @@
     - "sabnzbd.yaml" # NOTE: this one saves config to APP_DIR
     - "scrutiny.yaml" # NOTE: this one saves config to APP_DIR and CONFIG_DIR
     - "tautulli.yaml"
+    - "maintainerr.yaml"

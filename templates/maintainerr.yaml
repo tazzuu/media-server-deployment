@@ -1,0 +1,15 @@
+---
+services:
+    maintainerr:
+        container_name: maintainerr
+        image: ghcr.io/jorenn92/maintainerr:latest
+        user: 1000:1000
+        volumes:
+          - type: bind
+            source: $CONFIG_DIR/maintainerr
+            target: /opt/data
+        environment:
+          - TZ=EST
+        ports:
+          - 6246:6246
+        restart: unless-stopped
