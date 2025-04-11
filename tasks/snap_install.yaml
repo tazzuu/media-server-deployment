@@ -2,4 +2,5 @@
 - name: Install Snap packages
   snap:
     name:
+      - hello
       - nvtop

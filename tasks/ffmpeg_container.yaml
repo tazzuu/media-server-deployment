@@ -1,8 +1,15 @@
 ---
+- name: Check if ffmpeg container repo exists
+  stat:
+    path: "/home/{{ ansible_user }}/ffmpeg-av1"
+  register: ffmpeg_repo_exists
+
 - name: Clone ffmpeg Docker container
   git:
     repo: "https://github.com/tazzuu/ffmpeg-av1"
     dest: "/home/{{ ansible_user }}/ffmpeg-av1"
+    force: false
+  when: not ffmpeg_repo_exists.stat.exists
 
 - name: Check if Docker container exists
   shell: docker inspect ffmpeg-av1:7.1.1 1>/dev/null

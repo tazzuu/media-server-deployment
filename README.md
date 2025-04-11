@@ -75,6 +75,11 @@ ansible-playbook --private-key dev-key --user ubuntu -i $(./get-ip.sh), playbook
 
 # using your real server
 ansible-playbook --private-key ~/.ssh/my-key --user $USER -i 192.168.1.2, playbook.yaml
+
+# OR
+
+# run it from within the server itself
+ansible-playbook playbook.yaml --connection=local -i 127.0.0.1, --user $USER
 ```
 
 ## Post Deployment Steps
