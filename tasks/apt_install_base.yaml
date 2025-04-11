@@ -12,6 +12,7 @@
     # autoclean: true
     # autoremove: true # NOTE: maybe dont use this it might break downsteam steps on repeated runs
     pkg:
+    - ansible
     - apt-transport-https
     # - alsa-utils
     - bc
@@ -67,7 +68,7 @@
     - net-tools
     - nmon
     - nvme-cli
-    - nvtop
+    # - nvtop # install this with Snap instead for more up to date version
     - openssh-server
     - parallel
     - parted

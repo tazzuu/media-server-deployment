@@ -34,6 +34,7 @@
 
   # RUN TASK SETS
   - include_tasks: tasks/apt_install_base.yaml
+  - include_tasks: tasks/snap_install.yaml
   - include_tasks: tasks/docker.yaml
   - include_tasks: tasks/mergerfs.yaml
   - include_tasks: tasks/snapraid.yaml

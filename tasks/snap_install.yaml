@@ -1,0 +1,5 @@
+---
+- name: Install Snap packages
+  snap:
+    name:
+      - nvtop
