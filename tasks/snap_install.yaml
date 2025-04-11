@@ -1,3 +1,6 @@
+# install the Snap version of some packages
+# NOTE: this might break and you might have to screw with it
+# https://askubuntu.com/questions/1106106/how-do-i-fix-my-connection-to-api-snapcraft-io
 ---
 - name: Install Snap packages
   snap:
