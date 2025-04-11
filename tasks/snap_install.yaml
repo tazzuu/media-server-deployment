@@ -7,3 +7,16 @@
     name:
       - hello
       - nvtop
+
+# https://github.com/Syllo/nvtop?tab=readme-ov-file#snap
+- name: Configure nvtop snap
+  become: true
+  shell: |
+    # Add the capability to kill processes inside nvtop
+    snap connect nvtop:process-control
+    # Add the capability to inspect GPU information (fan, PCIe, power, etc)
+    snap connect nvtop:hardware-observe
+    # AMDGPU process list support (read /proc/<pid>)
+    snap connect nvtop:system-observe
+    # Temporary workaround to get per-process GPU usage (read /proc/<pid>/fdinfo)
+    #snap connect nvtop:kubernetes-support
