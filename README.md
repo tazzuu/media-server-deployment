@@ -123,11 +123,13 @@ sudo chgrp -R username /mnt/apps
 ```
 
 - update Grub settings to fix potential boot / reboot issues if needed
-  -
+
 ```bash
 sudo nano /etc/default/grub
 
+# try one of these;
 # GRUB_CMDLINE_LINUX_DEFAULT="reboot=bios"
+# GRUB_CMDLINE_LINUX_DEFAULT="reboot=warm,cold,bios,smp,triple,kbd,acpi,efi,pci,force"
 
 sudo update-grub
 ```
@@ -177,9 +179,7 @@ sudo ufw allow 32400
 - create the required subdirs on the app drive and scratch drive, copy over your old app and service configs to their appropriate config dirs
 
 - set power saving mode in BIOS
-  - or software
-
-```bash
-sudo powerprofilesctl set power-saver
-```
-
+  - enable OS ASPM
+  - disable Turbo Boost, Precision Boost, Precision Boost Overdrive
+  - enable Eco Mode
+  - disable unused mobo components like audio adapter, extra network adapters
