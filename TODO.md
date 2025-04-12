@@ -2,7 +2,7 @@
 - tdarr
 - snapraid runner
 - add Intel transcode driver option for Plex docker compose
-- fix reboot option ; https://askubuntu.com/questions/7114/why-cant-i-restart-shutdown
+
 - fix nvtop Intel config ; https://github.com/Syllo/nvtop/issues/363
 
 
@@ -22,7 +22,8 @@ DONE
 - ~~ufw setup~~
 - ~~ASPM power management~~
   - needs to be done in BIOS, the OS one is lousy
-
+- ~~fix reboot option ; https://askubuntu.com/questions/7114/why-cant-i-restart-shutdown~~
+  - this randomly fixed itself somehow idk how
 
 WONT DO
 
