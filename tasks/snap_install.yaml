@@ -2,6 +2,8 @@
 # NOTE: this might break and you might have to screw with it
 # https://askubuntu.com/questions/1106106/how-do-i-fix-my-connection-to-api-snapcraft-io
 ---
+# NOTE: this seems to never work right on a fresh ubuntu install you need to run this manually in the terminal oops sorry
+# sudo snap install hello nvtop
 - name: Install Snap packages
   snap:
     name:
