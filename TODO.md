@@ -5,7 +5,8 @@
 
 - fix nvtop Intel config ; https://github.com/Syllo/nvtop/issues/363
 
-
+- separate repo for finalized docker compose app dir for reference
+- apply hdparm for drive spin down https://wiki.archlinux.org/title/Hdparm
 
 DONE
 
