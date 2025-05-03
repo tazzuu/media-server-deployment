@@ -183,3 +183,22 @@ sudo ufw allow 32400
   - disable Turbo Boost, Precision Boost, Precision Boost Overdrive
   - enable Eco Mode
   - disable unused mobo components like audio adapter, extra network adapters
+
+-  add extra users
+
+```bash
+# add user and give them docker access
+sudo adduser wife
+sudo usermod -a -G docker wife
+
+# make a shared local volume
+sudo groupadd data
+sudo usermod -a -G data wife
+# cd /shared/volume
+sudo chgrp -R data .
+sudo chmod g+w .
+sudo chmod g+s .
+
+# test it
+sudo su - wife
+```
