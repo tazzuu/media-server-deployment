@@ -1,0 +1,17 @@
+# /etc/systemd/system/hdparm.service
+# https://linuxhandbook.com/create-systemd-services/
+# https://www.freedesktop.org/software/systemd/man/latest/systemd.syntax.html
+#
+# sudo systemctl daemon-reload
+# sudo systemctl enable SERVICE-NAME.service
+#
+
+[Unit]
+Description=hdparm sleep
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/hdparm -q -S 120 -y /dev/sdb
+
+[Install]
+WantedBy=multi-user.target
