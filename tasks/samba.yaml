@@ -33,7 +33,8 @@
       path = {{ media_mountpoint }}
       valid users = @{{ sharing_user }}
       browsable = yes
-      read only = yes
+      # read only = yes # NOTE: turn this off
+      writeable = yes
       create mask = 0664
       directory mask = 0775
 
