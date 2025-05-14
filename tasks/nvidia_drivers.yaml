@@ -8,3 +8,4 @@
     pkg:
     - nvidia-driver-570
 
+# NOTE: if you need to fix the drivers do this https://forums.developer.nvidia.com/t/how-to-fix-nvml-driver-library-version-mismatch-without-rebooting/269998
