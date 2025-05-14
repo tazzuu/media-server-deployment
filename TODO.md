@@ -10,6 +10,8 @@
 - try some of these https://web.archive.org/save/https://andrejacobs.org/b24/linux/spinning-down-seagate-hard-drives-in-ubuntu-20-04/
 - try this https://github.com/Seagate/openSeaChest
 
+- finish hdparm systemd service
+
 DONE
 
 - ~~sonarr, radarr, etc., app docker compose templates~~
