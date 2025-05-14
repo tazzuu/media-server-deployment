@@ -7,6 +7,8 @@
 
 - separate repo for finalized docker compose app dir for reference
 - apply hdparm for drive spin down https://wiki.archlinux.org/title/Hdparm
+- try some of these https://web.archive.org/save/https://andrejacobs.org/b24/linux/spinning-down-seagate-hard-drives-in-ubuntu-20-04/
+- try this https://github.com/Seagate/openSeaChest
 
 DONE
 
