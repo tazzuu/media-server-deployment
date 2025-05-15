@@ -1,0 +1,21 @@
+# https://ersatztv.org/docs/user-guide/install
+---
+services:
+  ersatztv:
+    image: jasongdove/ersatztv:latest # NOTE: there's an Nvidia transcode version available separately
+    container_name: ersatztv
+    environment:
+      - PUID=1000 # these might not actually do anything in this container
+      - PGID=1000
+      - TZ=EST
+    volumes:
+      - $CONFIG_DIR/ersatztv:/root/.local/share/ersatztv
+      - $MEDIA_DIR:$MEDIA_DIR:ro
+      # https://docs.docker.com/engine/storage/tmpfs/ # the default maximum size of a tmpfs volume is 50% of the host's total RAM.
+      - type: tmpfs
+        target: /root/.local/share/etv-transcode
+        tmpfs:
+          size: "$ETV_TMPFS_SIZE"
+    ports:
+      - 8409:8409
+    restart: unless-stopped

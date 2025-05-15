@@ -17,7 +17,7 @@
 
 - name: Add Plex docker compose templates
   template:
-    src: "templates/{{ item }}"
+    src: "apps/{{ item }}"
     dest: "{{ apps_dir }}/plex/{{ item }}"
     force: false # do no overwrite existing
   loop:
@@ -26,7 +26,7 @@
 
 - name: Add Plex docker compose file
   template:
-    src: "templates/docker-compose-plex.yaml"
+    src: "apps/docker-compose-plex.yaml"
     dest: "{{ apps_dir }}/plex/docker-compose.yaml"
 
 # all the rest of the services can share a dir
@@ -49,10 +49,11 @@
     - "scrutiny"
     - "tautulli"
     - "maintainerr"
+    - ersatztv
 
 - name: Add app services templates
   template:
-    src: "templates/{{ item }}"
+    src: "apps/{{ item }}"
     dest: "{{ apps_dir }}/services/{{ item }}"
     force: false # do no overwrite existing
   loop:
@@ -67,3 +68,4 @@
     - "scrutiny.yaml" # NOTE: this one saves config to APP_DIR and CONFIG_DIR
     - "tautulli.yaml"
     - "maintainerr.yaml"
+    - ersatztv.yaml
