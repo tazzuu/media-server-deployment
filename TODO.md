@@ -2,7 +2,6 @@
 - tdarr
 - snapraid runner
 - add Intel transcode driver option for Plex docker compose
-- figure out the requirements to get Plex to transcode to RAM since we have a lot of it
 
 - separate repo for finalized docker compose app dir for reference
 - apply hdparm for drive spin down https://wiki.archlinux.org/title/Hdparm
@@ -32,6 +31,7 @@ DONE
   - this randomly fixed itself somehow idk how
 - ~~fix nvtop Intel config ; https://github.com/Syllo/nvtop/issues/363~~
   - Intel Arc 310 works with nvtop if you install nvtop from Snap instead of apt
+- ~~figure out the requirements to get Plex to transcode to RAM since we have a lot of it~~
 
 WONT DO
 
