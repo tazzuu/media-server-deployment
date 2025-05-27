@@ -9,6 +9,7 @@
     name:
       - hello
       - nvtop
+      - regclient
 
 # https://github.com/Syllo/nvtop?tab=readme-ov-file#snap
 - name: Configure nvtop snap
