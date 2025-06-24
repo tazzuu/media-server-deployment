@@ -10,6 +10,8 @@
 
 - finish hdparm systemd service
 
+- add https://github.com/tubearchivist/tubearchivist
+  - also add a container for https://github.com/yt-dlp/yt-dlp
 
 
 DONE
