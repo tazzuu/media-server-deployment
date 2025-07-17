@@ -13,6 +13,7 @@
 - add https://github.com/tubearchivist/tubearchivist
   - also add a container for https://github.com/yt-dlp/yt-dlp
 
+- add https://wiki.bazarr.media/Additional-Configuration/Whisper-Provider/
 
 DONE
 
